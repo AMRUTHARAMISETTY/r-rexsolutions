@@ -1,88 +1,67 @@
-import { useState, useEffect } from 'react';
-import { Navbar } from './components/layout/Navbar';
+import { useState } from 'react';
+import { GlobalCanvas } from './three/GlobalCanvas';
+import { Navbar } from './components/navigation/Navbar';
 import { HeroSection } from './components/sections/HeroSection';
-import { ServicesSection } from './components/sections/ServicesSection';
-import { ProblemsWeSolveSection } from './components/sections/ProblemsWeSolveSection';
-import { DevelopmentProcessSection } from './components/sections/DevelopmentProcessSection';
-import { WhyChooseUsSection } from './components/sections/WhyChooseUsSection';
-import { FeaturedProjectsSection } from './components/sections/FeaturedProjectsSection';
-import { FaqSection } from './components/sections/FaqSection';
-import { Footer } from './components/layout/Footer';
+import { WhatWeBuildSection } from './components/sections/WhatWeBuildSection';
+import { AiSection } from './components/sections/AiSection';
+import { ProcessSection } from './components/sections/ProcessSection';
+import { WhyRRexSection } from './components/sections/WhyRRexSection';
+import { EcosystemSection } from './components/sections/EcosystemSection';
+import { ProjectsSection } from './components/sections/ProjectsSection';
+import { AboutSection } from './components/sections/AboutSection';
+import { CtaSection } from './components/sections/CtaSection';
+import { FinaleSection } from './components/sections/FinaleSection';
+import { Footer } from './components/footer/Footer';
 import { ContactModal } from './components/ui/ContactModal';
-import { HomeShowcase } from './pages/HomeShowcase';
+import { useScrollProgress } from './hooks/useScrollProgress';
 
 export function App() {
-  const [currentView, setCurrentView] = useState<'hero' | 'home'>('hero');
-  const [isContactOpen, setIsContactOpen] = useState(false);
+  const { scrollProgress } = useScrollProgress();
+  const [contactOpen, setContactOpen] = useState(false);
+  const [selectedService, setSelectedService] = useState<string>('');
+  const [isDisintegrated, setIsDisintegrated] = useState(false);
 
-  // Sync browser hash / path navigation
-  useEffect(() => {
-    const handleHashChange = () => {
-      if (window.location.pathname === '/home' || window.location.hash === '#home') {
-        setCurrentView('home');
-      } else {
-        setCurrentView('hero');
-      }
-    };
-
-    handleHashChange();
-    window.addEventListener('popstate', handleHashChange);
-    return () => window.removeEventListener('popstate', handleHashChange);
-  }, []);
-
-  const navigateToHome = () => {
-    setCurrentView('home');
-    window.history.pushState(null, '', '/home');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const navigateToHero = () => {
-    setCurrentView('hero');
-    window.history.pushState(null, '', '/');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+  const handleOpenContact = (serviceName?: string) => {
+    if (serviceName) setSelectedService(serviceName);
+    setContactOpen(true);
   };
 
   return (
-    <div className="min-h-screen bg-[#09090b] text-slate-100 selection:bg-blue-500 selection:text-white">
-      {/* Sticky Frosted Navigation Bar */}
-      <Navbar
-        onNavigateHome={navigateToHero}
-        onOpenContactModal={() => setIsContactOpen(true)}
+    <div className="relative min-h-screen bg-[#020711] text-[#EAF4FF] font-sans selection:bg-[#0060F0] selection:text-white">
+      {/* Real-Time Three.js Global Background Canvas */}
+      <GlobalCanvas
+        scrollProgress={scrollProgress}
+        isDisintegrated={isDisintegrated}
       />
 
-      {/* Main View Router */}
-      <main>
-        {currentView === 'hero' ? (
-          <>
-            <HeroSection
-              onExploreClick={navigateToHome}
-              onContactClick={() => setIsContactOpen(true)}
-            />
-            <ServicesSection onOpenContact={() => setIsContactOpen(true)} />
-            <ProblemsWeSolveSection />
-            <DevelopmentProcessSection />
-            <WhyChooseUsSection onOpenContact={() => setIsContactOpen(true)} />
-            <FeaturedProjectsSection onOpenShowcase={navigateToHome} />
-            <FaqSection />
-          </>
-        ) : (
-          <HomeShowcase
-            onBackToHero={navigateToHero}
-            onOpenContact={() => setIsContactOpen(true)}
-          />
-        )}
+      {/* Navigation Header */}
+      <Navbar onOpenContact={() => handleOpenContact()} />
+
+      {/* Main Page Content Sections */}
+      <main className="relative z-10">
+        <HeroSection onOpenContact={() => handleOpenContact()} />
+        <WhatWeBuildSection onSelectService={(svc) => handleOpenContact(svc)} />
+        <AiSection onOpenContact={() => handleOpenContact('AI Solutions & Automation')} />
+        <ProcessSection />
+        <WhyRRexSection />
+        <EcosystemSection />
+        <ProjectsSection />
+        <AboutSection />
+        <CtaSection onOpenContact={() => handleOpenContact()} />
+        <FinaleSection
+          isDisintegrated={isDisintegrated}
+          onToggleDisintegration={() => setIsDisintegrated(!isDisintegrated)}
+        />
       </main>
 
-      {/* Modern Footer */}
-      <Footer
-        onNavigateHome={navigateToHero}
-        onOpenContactModal={() => setIsContactOpen(true)}
-      />
+      {/* Footer */}
+      <Footer />
 
-      {/* Interactive Consultation Form Modal Dialog */}
+      {/* Contact / Project Kickoff Modal */}
       <ContactModal
-        isOpen={isContactOpen}
-        onClose={() => setIsContactOpen(false)}
+        isOpen={contactOpen}
+        onClose={() => setContactOpen(false)}
+        initialService={selectedService}
       />
     </div>
   );
