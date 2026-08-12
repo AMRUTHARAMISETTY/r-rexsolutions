@@ -57,7 +57,7 @@ export const ProjectsSection: React.FC = () => {
           <div>
             <div className="font-mono-tech text-xs text-[#00C0F0] uppercase tracking-widest mb-3 flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-[#00C0F0]" />
-              FEATURED CLIENT WORK
+              R-REX BUILD LOG — SYSTEMS WE'VE SHIPPED
             </div>
             <h2 className="font-display text-3xl sm:text-5xl font-bold text-white tracking-tight">
               ENGINEERING SHOWCASE

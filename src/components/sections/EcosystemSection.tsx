@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { motion } from 'framer-motion';
+import type { Variants } from 'framer-motion';
 import { Cpu, Code, Cloud, Database, Building2, Zap, BarChart3, GitFork } from 'lucide-react';
 
 interface SystemNode {
@@ -20,114 +22,118 @@ const nodes: SystemNode[] = [
   { id: 'integrations', name: 'API INTEGRATIONS', category: 'CONNECTIVITY', description: 'Secure REST/GraphQL APIs, webhooks & microservices mesh.', icon: GitFork },
 ];
 
-export const EcosystemSection: React.FC = () => {
-  const [selectedNode, setSelectedNode] = useState<SystemNode>(nodes[0]);
+const slideLeftVariants: Variants = {
+  hidden: { opacity: 0, x: -80 },
+  show: {
+    opacity: 1,
+    x: 0,
+    transition: {
+      type: 'spring',
+      stiffness: 60,
+      damping: 13,
+    },
+  },
+};
 
+const slideRightVariants: Variants = {
+  hidden: { opacity: 0, x: 80 },
+  show: {
+    opacity: 1,
+    x: 0,
+    transition: {
+      type: 'spring',
+      stiffness: 60,
+      damping: 13,
+    },
+  },
+};
+
+export const EcosystemSection: React.FC = () => {
   return (
     <section id="ecosystem" className="relative py-28 px-4 sm:px-6 lg:px-8 z-10">
       <div className="max-w-7xl mx-auto">
         
         {/* Header */}
-        <div className="text-center max-w-3xl mx-auto mb-16">
+        <div className="text-center max-w-3xl mx-auto mb-20">
           <div className="font-mono-tech text-xs text-[#00C0F0] uppercase tracking-widest mb-3 flex items-center justify-center gap-2">
             <span className="w-2 h-2 rounded-full bg-[#00C0F0]"></span>
-            SYNCHRONIZED INFRASTRUCTURE
+            THE R-REX STACK — CONNECTED BY DESIGN
           </div>
           <h2 className="font-display text-4xl sm:text-6xl font-bold text-white tracking-tight">
             TECHNOLOGY ECOSYSTEM
           </h2>
-          <p className="text-[#94A3B8] text-base mt-4">
-            The R-REX ENGINE connects disconnected tech stacks into a single, synchronized digital infrastructure.
+          <p className="text-[#94A3B8] text-base mt-4 leading-relaxed">
+            We don't build isolated tools. Every system we create integrates into one synchronized operational intelligence layer — built for scale, speed and security.
           </p>
         </div>
 
-        {/* Ecosystem Radial Graphic + Details Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-          
-          {/* Radial Ecosystem Interactive Nodes (Left 7 cols) */}
-          <div className="lg:col-span-7 relative flex items-center justify-center min-h-[420px]">
-            {/* Center Core R-REX ENGINE */}
-            <div className="z-10 p-6 rounded-full bg-gradient-to-br from-[#0060F0] to-[#00C0F0] shadow-[0_0_50px_rgba(0,192,240,0.5)] border-4 border-[#020711] text-center w-36 h-36 flex flex-col items-center justify-center cursor-pointer transform hover:scale-105 transition-transform">
-              <span className="font-mono-tech text-[9px] text-white/80 uppercase tracking-widest">CENTRAL</span>
-              <span className="font-display font-bold text-sm text-white leading-tight">R-REX ENGINE</span>
-            </div>
-
-            {/* Connecting Orbit Rings */}
-            <div className="absolute w-[320px] h-[320px] rounded-full border border-[#00C0F0]/20 border-dashed animate-spin [animation-duration:40s]"></div>
-            <div className="absolute w-[440px] h-[440px] rounded-full border border-[#0060F0]/15"></div>
-
-            {/* Surrounding 8 Nodes */}
-            <div className="absolute inset-0 flex items-center justify-center">
-              {nodes.map((node, idx) => {
-                const angle = (idx / nodes.length) * Math.PI * 2;
-                const radius = 170; // Position radius in px
-                const x = Math.cos(angle) * radius;
-                const y = Math.sin(angle) * radius;
-                const Icon = node.icon;
-                const isSelected = selectedNode.id === node.id;
-
-                return (
-                  <button
-                    key={node.id}
-                    onClick={() => setSelectedNode(node)}
-                    style={{ transform: `translate(${x}px, ${y}px)` }}
-                    className={`absolute z-20 p-3.5 rounded-2xl border backdrop-blur-md transition-all duration-300 flex items-center gap-2 group cursor-pointer ${
-                      isSelected
-                        ? 'bg-[#0060F0] border-[#00C0F0] text-white shadow-[0_0_25px_rgba(0,192,240,0.6)] scale-110'
-                        : 'bg-[#06142B]/80 border-[#0060F0]/30 text-[#00C0F0] hover:bg-[#001040] hover:border-[#00C0F0]'
-                    }`}
-                  >
-                    <Icon className="w-4 h-4" />
-                    <span className="font-mono-tech text-[10px] font-semibold tracking-wider text-white hidden sm:inline-block">
-                      {node.name.split(' ')[0]}
+        {/* Ecosystem Cards - One-by-One Vertical Stack with Alternate Slide Entrance */}
+        <div className="flex flex-col gap-8 max-w-2xl mx-auto">
+          {nodes.map((node, idx) => {
+            const Icon = node.icon;
+            const isEven = idx % 2 === 0;
+            return (
+              <motion.div
+                key={node.id}
+                variants={isEven ? slideLeftVariants : slideRightVariants}
+                initial="hidden"
+                whileInView="show"
+                viewport={{ once: true, margin: '-80px' }}
+                className="rrex-glass-card h-72 rounded-2xl border border-[#00C0F0]/15 relative overflow-hidden group cursor-pointer"
+              >
+                {/* Front Face - Only Title, Category & Icon */}
+                <div className="absolute inset-0 p-6 flex flex-col justify-between z-10 transition-transform duration-300 group-hover:-translate-y-4">
+                  <div>
+                    <div className="w-12 h-12 rounded-xl bg-[#001040] border border-[#00C0F0]/30 flex items-center justify-center text-[#00C0F0] group-hover:bg-[#0060F0] group-hover:text-white transition-all duration-300">
+                      <Icon className="w-6 h-6" />
+                    </div>
+                    <span className="font-mono-tech text-[9px] text-[#00C0F0] tracking-widest uppercase block mt-6 mb-2">
+                      {node.category}
                     </span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Selected Node Technical Spec Card (Right 5 cols) */}
-          <div className="lg:col-span-5">
-            <div className="rrex-glass-card p-8 rounded-3xl border border-[#00C0F0]/30 relative overflow-hidden">
-              <div className="flex items-center justify-between border-b border-[#0060F0]/20 pb-4 mb-6">
-                <span className="font-mono-tech text-xs text-[#00C0F0] bg-[#001040] px-3 py-1 rounded border border-[#0060F0]/40 uppercase">
-                  {selectedNode.category}
-                </span>
-                <span className="font-mono-tech text-[10px] text-[#94A3B8]">CONNECTED TO R-REX ENGINE</span>
-              </div>
-
-              <div className="flex items-center gap-4 mb-4">
-                <div className="p-3.5 rounded-2xl bg-[#0060F0] text-white border border-[#00C0F0]/40">
-                  {React.createElement(selectedNode.icon, { className: 'w-7 h-7' })}
+                    <h3 className="font-display font-bold text-xl text-white tracking-tight">
+                      {node.name}
+                    </h3>
+                  </div>
+                  <div className="flex items-center gap-1.5 text-xs text-[#00C0F0]/70 font-mono-tech">
+                    <span>REVEAL DETAILS</span>
+                    <span className="animate-pulse">→</span>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="font-display text-2xl font-bold text-white">{selectedNode.name}</h3>
-                  <p className="text-xs text-[#00C0F0] font-mono-tech">SYSTEM MODULE</p>
-                </div>
-              </div>
 
-              <p className="text-sm text-[#94A3B8] leading-relaxed mb-6">
-                {selectedNode.description}
-              </p>
+                {/* Slide-Up Panel (Complete Info) */}
+                <div className="absolute inset-0 bg-gradient-to-b from-[#001040] to-[#06142B] border-t-2 border-[#00C0F0] p-6 flex flex-col justify-between z-20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out">
+                  <div>
+                    <div className="flex items-center justify-between mb-4">
+                      <span className="font-mono-tech text-[9px] text-[#00C0F0] bg-[#001040] px-2 py-0.5 rounded border border-[#0060F0]/25">
+                        {node.category}
+                      </span>
+                      <span className="font-mono-tech text-[9px] text-[#94A3B8]">ACTIVE</span>
+                    </div>
+                    <h4 className="font-display font-bold text-md text-white mb-2">{node.name}</h4>
+                    <p className="text-xs text-[#94A3B8] leading-relaxed">
+                      {node.description}
+                    </p>
+                  </div>
 
-              <div className="p-4 rounded-xl bg-[#020711] border border-[#0060F0]/20 space-y-2">
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-[#94A3B8]">Data Latency:</span>
-                  <span className="font-mono-tech text-[#00C0F0]">&lt; 15ms</span>
+                  {/* Tech Specs Block */}
+                  <div className="space-y-2 pt-4 border-t border-[#0060F0]/20">
+                    <div className="flex items-center justify-between text-[10px] font-mono-tech">
+                      <span className="text-[#94A3B8]/80">LATENCY</span>
+                      <span className="text-[#00C0F0]">&lt; 15ms</span>
+                    </div>
+                    <div className="flex items-center justify-between text-[10px] font-mono-tech">
+                      <span className="text-[#94A3B8]/80">SECURITY</span>
+                      <span className="text-[#00C0F0]">AES-256 / Zero Trust</span>
+                    </div>
+                    <div className="flex items-center justify-between text-[10px] font-mono-tech">
+                      <span className="text-[#94A3B8]/80">SYNC FREQ</span>
+                      <span className="text-[#00C0F0]">Real-Time</span>
+                    </div>
+                  </div>
                 </div>
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-[#94A3B8]">Security Layer:</span>
-                  <span className="font-mono-tech text-[#00C0F0]">AES-256 / Zero Trust</span>
-                </div>
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-[#94A3B8]">Sync Frequency:</span>
-                  <span className="font-mono-tech text-[#00C0F0]">Real-Time WebSockets</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
+              </motion.div>
+            );
+          })}
         </div>
 
       </div>

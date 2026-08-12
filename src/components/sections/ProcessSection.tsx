@@ -72,7 +72,7 @@ export const ProcessSection: React.FC = () => {
         <div className="text-center max-w-3xl mx-auto mb-20">
           <div className="font-mono-tech text-xs text-[#00C0F0] uppercase tracking-widest mb-3 flex items-center justify-center gap-2">
             <span className="w-2 h-2 rounded-full bg-[#00C0F0]"></span>
-            METHODOLOGY
+            HOW WE DELIVER — THE R-REX BUILD PROTOCOL
           </div>
           <h2 className="font-display text-4xl sm:text-6xl font-bold text-white tracking-tight">
             FROM IDEA{' '}
@@ -81,7 +81,7 @@ export const ProcessSection: React.FC = () => {
             </span>
           </h2>
           <p className="text-[#94A3B8] text-base mt-4">
-            A battle-tested engineering methodology that minimizes risk and guarantees production quality.
+            A battle-tested 6-stage engineering framework that eliminates ambiguity, reduces delivery risk, and guarantees production-grade quality every time.
           </p>
         </div>
 

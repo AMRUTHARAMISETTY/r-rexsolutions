@@ -57,15 +57,6 @@ export const RRexLogo: React.FC<RRexLogoProps> = ({
           </filter>
         </defs>
 
-        {/* Outer Tech Hex Shield Outline */}
-        <path
-          d="M 100 10 L 175 50 L 175 150 L 100 190 L 25 150 L 25 50 Z"
-          stroke="url(#rrexCyanGrad)"
-          strokeWidth="1.5"
-          strokeDasharray="4 4"
-          opacity="0.35"
-        />
-
         {/* T-REX Head Polygon Silhouette (Facing Right) */}
         <path
           d="M 60 40 
@@ -85,7 +76,7 @@ export const RRexLogo: React.FC<RRexLogoProps> = ({
              L 60 70 Z"
           fill="url(#rrexHeadGrad)"
           stroke="#0060F0"
-          strokeWidth="2"
+          strokeWidth="2.5"
         />
 
         {/* Glowing Eye Slit */}
@@ -95,32 +86,16 @@ export const RRexLogo: React.FC<RRexLogoProps> = ({
           filter="url(#cyanGlow)"
         />
 
-        {/* Internal Architectural Tech Cuts */}
+        {/* Interlocking 'X' Symbol at Neck/Chest (Cyan Accent) - Aligned to Neck */}
         <path
-          d="M 75 70 L 120 70 L 105 85 L 75 85 Z"
-          fill="rgba(0, 192, 240, 0.2)"
-          stroke="#00C0F0"
-          strokeWidth="1"
-        />
-
-        {/* Interlocking 'X' Symbol at Neck/Chest (Cyan Accent) */}
-        <path
-          d="M 70 125 L 90 155 L 105 155 L 85 125 Z"
+          d="M 58 125 L 78 155 L 93 155 L 73 125 Z"
           fill="url(#rrexCyanGrad)"
           filter="url(#cyanGlow)"
         />
         <path
-          d="M 90 125 L 70 155 L 85 155 L 105 125 Z"
+          d="M 78 125 L 58 155 L 73 155 L 93 125 Z"
           fill="url(#rrexCyanGrad)"
           filter="url(#cyanGlow)"
-        />
-
-        {/* Edge Highlight Lines */}
-        <path
-          d="M 60 40 L 135 40 L 155 55"
-          stroke="#00C0F0"
-          strokeWidth="2.5"
-          strokeLinecap="round"
         />
       </svg>
 
@@ -144,3 +119,5 @@ export const RRexLogo: React.FC<RRexLogoProps> = ({
     </div>
   );
 };
+
+export default RRexLogo;

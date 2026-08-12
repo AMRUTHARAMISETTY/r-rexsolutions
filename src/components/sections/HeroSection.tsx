@@ -13,7 +13,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onOpenContact }) => {
         <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#06142B]/80 border border-[#00C0F0]/30 backdrop-blur-md mb-8 shadow-[0_0_20px_rgba(0,192,240,0.15)] animate-rrex-float">
           <Sparkles className="w-4 h-4 text-[#00C0F0]" />
           <span className="font-mono-tech text-xs uppercase tracking-widest text-[#00C0F0] font-semibold">
-            DIGITAL ENGINEERING × AI
+            R-REX SOLUTIONS — ENGINEERING WHAT'S NEXT
           </span>
         </div>
 
@@ -54,19 +54,19 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onOpenContact }) => {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 w-full max-w-3xl pt-8 border-t border-[#0060F0]/15">
           <div className="flex flex-col items-center p-3 rounded-lg bg-[#06142B]/30 border border-[#00C0F0]/10">
             <span className="font-display font-bold text-xl text-white">100%</span>
-            <span className="font-mono-tech text-[10px] text-[#94A3B8] uppercase">Custom Code</span>
+            <span className="font-mono-tech text-[10px] text-[#94A3B8] uppercase">Proprietary Code</span>
           </div>
           <div className="flex flex-col items-center p-3 rounded-lg bg-[#06142B]/30 border border-[#00C0F0]/10">
-            <span className="font-display font-bold text-xl text-[#00C0F0]">AI-First</span>
-            <span className="font-mono-tech text-[10px] text-[#94A3B8] uppercase">Architectures</span>
+            <span className="font-display font-bold text-xl text-[#00C0F0]">AI-Native</span>
+            <span className="font-mono-tech text-[10px] text-[#94A3B8] uppercase">System Design</span>
           </div>
           <div className="flex flex-col items-center p-3 rounded-lg bg-[#06142B]/30 border border-[#00C0F0]/10">
-            <span className="font-display font-bold text-xl text-white">Enterprise</span>
-            <span className="font-mono-tech text-[10px] text-[#94A3B8] uppercase">Reliability</span>
+            <span className="font-display font-bold text-xl text-white">Zero</span>
+            <span className="font-mono-tech text-[10px] text-[#94A3B8] uppercase">Outsourced Dev</span>
           </div>
           <div className="flex flex-col items-center p-3 rounded-lg bg-[#06142B]/30 border border-[#00C0F0]/10">
             <span className="font-display font-bold text-xl text-[#00C0F0]">End-to-End</span>
-            <span className="font-mono-tech text-[10px] text-[#94A3B8] uppercase">Implementation</span>
+            <span className="font-mono-tech text-[10px] text-[#94A3B8] uppercase">Full Delivery</span>
           </div>
         </div>
 

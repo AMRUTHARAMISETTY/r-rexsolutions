@@ -14,7 +14,7 @@ export const CtaSection: React.FC<CtaSectionProps> = ({ onOpenContact }) => {
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#001040] border border-[#00C0F0]/40 mb-6">
             <Sparkles className="w-4 h-4 text-[#00C0F0]" />
             <span className="font-mono-tech text-xs text-[#00C0F0] uppercase tracking-widest font-semibold">
-              KICKSTART YOUR SYSTEM
+              YOUR PROBLEM. OUR SYSTEM. LET'S GO.
             </span>
           </div>
 
@@ -26,7 +26,7 @@ export const CtaSection: React.FC<CtaSectionProps> = ({ onOpenContact }) => {
           </h2>
 
           <p className="text-base sm:text-xl text-[#94A3B8] max-w-2xl mx-auto leading-relaxed mb-10">
-            Tell us what you want to build. We'll help you figure out what to build, how to build it, and how to take it into production.
+            Describe what you want to build. We'll assess the right approach, scope the architecture, and take full ownership from whiteboard to production — without the typical agency overhead.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
