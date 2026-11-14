@@ -673,17 +673,6 @@ h1 span {
   opacity: 0.42;
 }
 
-.section-number {
-  position: absolute;
-  z-index: 2;
-  top: 7rem;
-  left: max(1rem, calc((100vw - 84rem) / 2));
-  color: rgba(252, 240, 225, 0.08);
-  font-family: var(--font-mono);
-  font-size: clamp(5rem, 16vw, 14rem);
-  font-weight: 700;
-}
-
 .manifesto-copy {
   position: relative;
   z-index: 3;

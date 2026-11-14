@@ -56,7 +56,6 @@ export function ManifestoSection({ reducedMotion }: { reducedMotion: boolean }) 
       </div>
       <div className="manifesto-bg-overlay" aria-hidden="true" />
       <div className="manifesto-light" aria-hidden="true" />
-      <div className="section-number">00</div>
       <div className="manifesto-copy">
         {manifestoStatements.map((statement) => (
           <h2 className="manifesto-statement" key={statement.text}>
