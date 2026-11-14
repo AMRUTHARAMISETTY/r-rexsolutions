@@ -1,144 +1,74 @@
-import { motion } from 'framer-motion';
-import { fadeUp, stagger } from '../../lib/variants';
+import { useState } from 'react';
+import { Pause, Play } from 'lucide-react';
+import { workItems, type WorkItem } from '../../data/siteContent';
 
-/* Only genuine/labelled work — never invented clients */
-const PROJECTS = [
-  {
-    label:       'Internal Project',
-    title:       'Campus Management Platform',
-    description:
-      'A unified platform for managing student records, attendance, fee collection, and parent communication — built to replace manual paper-based processes.',
-    tags:        ['React', 'Node.js', 'PostgreSQL', 'Stripe'],
-    outcome:     'Eliminated manual fee collection and attendance tracking for a 500+ student institution.',
-  },
-  {
-    label:       'Prototype',
-    title:       'AI Document Assistant',
-    description:
-      'An AI assistant that reads internal company documents and answers employee questions — reducing the time spent searching for policy information.',
-    tags:        ['Python', 'OpenAI', 'FastAPI', 'React'],
-    outcome:     'Prototype demonstrated 70% reduction in document search time during internal testing.',
-  },
-  {
-    label:       'Concept',
-    title:       'Retail Inventory Sync Engine',
-    description:
-      'A system that synchronizes inventory between a physical point-of-sale and an online storefront in real-time — eliminating manual stock reconciliation.',
-    tags:        ['Next.js', 'TypeScript', 'Webhooks', 'MySQL'],
-    outcome:     'Concept validated with a small retail client pilot; full build in progress.',
-  },
-  {
-    label:       'Experimental Build',
-    title:       'Automated Workflow Toolkit',
-    description:
-      'A no-code automation builder that lets non-technical team members create approval workflows, notification triggers, and report schedules without writing code.',
-    tags:        ['React', 'n8n', 'REST APIs', 'Tailwind'],
-    outcome:     'Experimental build demonstrates the core automation engine with configurable workflows.',
-  },
-];
-
-const labelStyles: Record<string, string> = {
-  'Internal Project':     'text-[var(--blue)]   bg-blue-950/40   border-blue-900/40',
-  'Prototype':            'text-[var(--cyan)]   bg-cyan-950/30   border-cyan-900/30',
-  'Concept':              'text-amber-400       bg-amber-950/30  border-amber-900/30',
-  'Experimental Build':   'text-violet-400      bg-violet-950/30 border-violet-900/30',
-};
-
-
-
-export function WorkSection() {
+function WorkCard({ item, duplicate = false }: { item: WorkItem; duplicate?: boolean }) {
+  const Icon = item.icon;
   return (
-    <section
-      id="work"
-      aria-labelledby="work-heading"
-      className="section-rrex section-dark"
-    >
-      <div className="container-rrex">
+    <article className="work-card" aria-hidden={duplicate || undefined}>
+      <div className="work-media">
+        <img src={item.image} alt="" width={1280} height={853} loading="eager" />
+        <div className="work-overlay">
+          <span>{item.label}</span>
+          <p>{item.solution}</p>
+        </div>
+      </div>
+      <div className="work-caption">
+        <span className="work-icon" aria-hidden="true"><Icon size={18} /></span>
+        <div>
+          <h3>{item.category}</h3>
+          <p>{item.title} <span>{item.handle}</span></p>
+        </div>
+      </div>
+    </article>
+  );
+}
 
-        {/* Header */}
-        <motion.div
-          className="max-w-2xl mb-16"
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true }}
-          variants={fadeUp}
-        >
-          <span className="badge-rrex mb-5 inline-flex">Our work</span>
-          <h2 id="work-heading" className="text-h2 font-display text-white mb-4">
-            What we've built.
-          </h2>
-          <p className="text-body">
-            We're a growing team — so we label our work honestly. Projects are
-            marked as internal builds, prototypes, or experimental work where
-            appropriate. Trust is built through transparency.
-          </p>
-        </motion.div>
+// Only publish client names, results and testimonials after written approval.
+export function WorkSection() {
+  const [paused, setPaused] = useState(false);
+  const topRow = workItems.filter((_, index) => index % 2 === 0);
+  const bottomRow = workItems.filter((_, index) => index % 2 === 1);
 
-        {/* Projects */}
-        <motion.div
-          className="grid grid-cols-1 md:grid-cols-2 gap-6"
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, margin: '-60px' }}
-          variants={stagger}
-        >
-          {PROJECTS.map((project) => (
-            <motion.article
-              key={project.title}
-              variants={fadeUp}
-              className="card-rrex p-7 sm:p-8 flex flex-col gap-5"
-            >
-              {/* Label badge */}
-              <span
-                className={[
-                  'self-start text-xs font-mono font-semibold tracking-widest uppercase px-2.5 py-1 rounded-md border',
-                  labelStyles[project.label] ?? 'text-[var(--text-muted)]',
-                ].join(' ')}
-              >
-                {project.label}
-              </span>
+  return (
+    <section className={`section work-section${paused ? ' is-paused' : ''}`} id="work">
+      <div className="work-heading-row">
+        <div className="section-heading">
+          <span className="section-kicker">03 / PROOF SYSTEM</span>
+          <h2>Selected Work</h2>
+          <p>Original product concepts and capability studies across digital products, AI, automation and brand systems.</p>
+        </div>
+        <div className="work-controls" aria-label="Showcase controls">
+          <button
+            type="button"
+            onClick={() => setPaused((current) => !current)}
+            aria-label={paused ? 'Play project showcase' : 'Pause project showcase'}
+            title={paused ? 'Play project showcase' : 'Pause project showcase'}
+          >
+            {paused ? <Play size={18} /> : <Pause size={18} />}
+          </button>
+        </div>
+      </div>
 
-              {/* Title */}
-              <h3 className="text-h3 font-display text-white leading-snug">
-                {project.title}
-              </h3>
-
-              {/* Description */}
-              <p className="text-body text-sm flex-1">
-                {project.description}
-              </p>
-
-              {/* Outcome */}
-              <p
-                className="text-sm italic leading-relaxed border-l-2 pl-4"
-                style={{
-                  color:       'var(--text-secondary)',
-                  borderColor: 'var(--border-blue)',
-                }}
-              >
-                {project.outcome}
-              </p>
-
-              {/* Tags */}
-              <div className="flex flex-wrap gap-2 pt-2 border-t" style={{ borderColor: 'var(--border-subtle)' }}>
-                {project.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="text-xs font-mono px-2.5 py-1 rounded-md"
-                    style={{
-                      background:  'var(--surface-3)',
-                      color:       'var(--text-secondary)',
-                      border:      '1px solid var(--border-subtle)',
-                    }}
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
-            </motion.article>
-          ))}
-        </motion.div>
-
+      <div className="work-marquee" aria-label="R-REX project showcase, first row moving left to right">
+        <div className="work-row-track work-row-forward">
+          <div className="work-row-set">
+            {topRow.map((item) => <WorkCard key={`top-${item.title}`} item={item} />)}
+          </div>
+          <div className="work-row-set" aria-hidden="true">
+            {topRow.map((item) => <WorkCard key={`top-copy-${item.title}`} item={item} duplicate />)}
+          </div>
+        </div>
+      </div>
+      <div className="work-marquee" aria-label="R-REX project showcase, second row moving right to left">
+        <div className="work-row-track work-row-reverse">
+          <div className="work-row-set">
+            {bottomRow.map((item) => <WorkCard key={`bottom-${item.title}`} item={item} />)}
+          </div>
+          <div className="work-row-set" aria-hidden="true">
+            {bottomRow.map((item) => <WorkCard key={`bottom-copy-${item.title}`} item={item} duplicate />)}
+          </div>
+        </div>
       </div>
     </section>
   );
