@@ -4,6 +4,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { CheckCircle2, ArrowRight } from 'lucide-react';
 import { ButtonLink } from '../ui/ButtonLink';
 import { services } from '../../data/siteContent';
+import LightCables from '../visuals/LightCables';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -50,6 +51,20 @@ export function ServicesSection({ reducedMotion }: { reducedMotion: boolean }) {
 
   return (
     <section id="services" className="section service-section" ref={sectionRef}>
+      <div className="services-cables" aria-hidden="true">
+        <LightCables
+          direction="ttb"
+          background="#100a05"
+          baseColor="#5c2b0d"
+          accentColor="#f36b16"
+          highlight="#ffd17d"
+          speed={42}
+          hover={55}
+          grab={70}
+          bundle={{ bend: 8, count: 42, spread: 92, widthEnd: 280, thickness: 180, widthStart: 0 }}
+          flow={{ flow: 220, pulses: 2 }}
+        />
+      </div>
       <div className="section-heading">
         <span className="section-kicker">01 / SERVICES</span>
         <h2>What we build</h2>

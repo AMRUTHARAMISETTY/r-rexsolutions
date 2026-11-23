@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Pause, Play } from 'lucide-react';
 import { workItems, type WorkItem } from '../../data/siteContent';
+import Lumaweave from '../visuals/Lumaweave';
 
 function WorkCard({ item, duplicate = false }: { item: WorkItem; duplicate?: boolean }) {
   const Icon = item.icon;
@@ -32,6 +33,15 @@ export function WorkSection() {
 
   return (
     <section className={`section work-section${paused ? ' is-paused' : ''}`} id="work">
+      <div className="work-lumaweave" aria-hidden="true">
+        <Lumaweave
+          background="#120804"
+          baseColor="#fff3dc"
+          colors={['#ff8a1f', '#ffd166', '#fff4db', '#f36b16']}
+          speed={62}
+          scale={145}
+        />
+      </div>
       <div className="work-heading-row">
         <div className="section-heading">
           <span className="section-kicker">03 / PROOF SYSTEM</span>

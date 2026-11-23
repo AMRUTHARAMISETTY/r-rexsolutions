@@ -11,7 +11,7 @@ export function WhyChooseUsSection() {
         {values.map((value) => {
           const Icon = value.icon;
           return (
-            <article className="value-panel" key={value.title}>
+            <article className={`value-panel value-panel-${value.title.toLowerCase().replace(/\s+/g, '-')}`} key={value.title}>
               <Icon size={24} />
               <h3>{value.title}</h3>
             </article>

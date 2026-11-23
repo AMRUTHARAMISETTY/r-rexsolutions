@@ -25,7 +25,10 @@ export function Footer() {
         <a href={`mailto:${brand.email}`}>Email</a>
         <a href={brand.phoneHref}>Phone</a>
         <a href="#privacy">Privacy Policy</a>
-        <a href="#terms">Terms</a>
+        <a href="#terms">Terms of Service</a>
+        <a href="#cookies">Cookie Policy</a>
+        <a href="#accessibility">Accessibility</a>
+        <a href="#refunds">Refunds & Cancellations</a>
       </div>
       <p className="copyright">© {new Date().getFullYear()} R-REX Solutions. {brand.tagline}.</p>
     </footer>

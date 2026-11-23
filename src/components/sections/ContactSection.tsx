@@ -2,6 +2,7 @@ import { useState } from 'react';
 import type { FormEvent } from 'react';
 import { Mail, Phone, Send } from 'lucide-react';
 import { brand } from '../../data/siteContent';
+import GlitterCascade from '../visuals/GlitterCascade';
 
 type ContactForm = {
   name: string;
@@ -72,6 +73,16 @@ export function ContactSection() {
 
   return (
     <section id="contact" className="section contact-section">
+      <div className="contact-glitter" aria-hidden="true">
+        <GlitterCascade
+          background="#100a05"
+          baseColor="#ff9a3c"
+          accentColor="#fff0c2"
+          speed={75}
+          scale={110}
+          direction="down"
+        />
+      </div>
       <div className="contact-copy">
         <span className="section-kicker">CONTACT / START A PROJECT</span>
         <h2>Tell us what you want to build.</h2>

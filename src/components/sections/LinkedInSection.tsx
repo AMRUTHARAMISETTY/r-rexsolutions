@@ -20,7 +20,6 @@ export function LinkedInSection() {
             </a>
           );
         })}
-        <div className="future-posts">Space reserved for future approved LinkedIn posts.</div>
       </div>
       <ButtonLink href="https://www.linkedin.com/company/135853990/" external>
         Follow R-REX Solutions <ExternalLink size={16} />

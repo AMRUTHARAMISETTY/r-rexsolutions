@@ -11,12 +11,12 @@ import { CapabilitiesStrip } from './components/sections/CapabilitiesStrip';
 import { ProcessSection } from './components/sections/ProcessSection';
 import { WorkSection } from './components/sections/WorkSection';
 import { WhyChooseUsSection } from './components/sections/WhyChooseUsSection';
-import { WhoWeServeSection } from './components/sections/WhoWeServeSection';
 import { AboutSection } from './components/sections/AboutSection';
 import { InsightsSection } from './components/sections/InsightsSection';
 import { LinkedInSection } from './components/sections/LinkedInSection';
 import { FinalCtaSection } from './components/sections/FinalCtaSection';
 import { ContactSection } from './components/sections/ContactSection';
+import { LegalSection } from './components/sections/LegalSection';
 
 export function App() {
   const reducedMotion = useReducedMotion();
@@ -40,12 +40,12 @@ export function App() {
         <CapabilitiesStrip />
         <WorkSection />
         <WhyChooseUsSection />
-        <WhoWeServeSection />
         <AboutSection />
         <InsightsSection />
         <LinkedInSection />
         <FinalCtaSection />
         <ContactSection />
+        <LegalSection />
       </main>
       <Footer />
     </>

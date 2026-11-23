@@ -1,6 +1,7 @@
 import React from 'react';
 import { RRexLogo } from '../brand/RRexLogo';
 import { Mail, MapPin, Globe, Share2, MessageCircle, ArrowUp } from 'lucide-react';
+import { brand } from '../../data/siteContent';
 
 export const Footer: React.FC = () => {
   const scrollToTop = () => {
@@ -62,8 +63,8 @@ export const Footer: React.FC = () => {
             <ul className="space-y-3 text-sm text-[#94A3B8]">
               <li className="flex items-start gap-2.5">
                 <Mail className="w-4 h-4 text-[#00C0F0] shrink-0 mt-0.5" />
-                <a href="mailto:contact@rrexsolutions.com" className="hover:text-[#00C0F0] transition-colors">
-                  contact@rrexsolutions.com
+                <a href={`mailto:${brand.email}`} className="hover:text-[#00C0F0] transition-colors">
+                  {brand.email}
                 </a>
               </li>
               <li className="flex items-start gap-2.5">

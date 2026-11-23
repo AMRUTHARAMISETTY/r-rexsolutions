@@ -62,7 +62,7 @@ export const brand = {
   cofounder: 'Rangu Reddy Dheeraj',
   phone: '+91 78930 79391',
   phoneHref: 'tel:+917893079391',
-  email: 'amrutharamisetty248@gmail.com',
+  email: 'service@r-rexsolutions.com',
   whatsapp:
     'https://wa.me/917893079391?text=Hello%20R-REX%20Solutions%2C%20I%20would%20like%20to%20discuss%20a%20project.',
 };

@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import { ArrowDown, ArrowRight, ChevronRight } from 'lucide-react';
 import { ButtonLink } from '../ui/ButtonLink';
 import { CinematicBackdrop } from '../background/CinematicBackdrop';
-import { LogoAssembly } from '../cinematic/LogoAssembly';
+import LogoFormation from '../ui/LogoFormation';
 
 export function HeroSection({ reducedMotion }: { reducedMotion: boolean }) {
   return (
@@ -25,7 +25,7 @@ export function HeroSection({ reducedMotion }: { reducedMotion: boolean }) {
             </ButtonLink>
           </div>
         </div>
-        <LogoAssembly reducedMotion={reducedMotion} />
+        <LogoFormation className="hero-logo-formation" size="min(42vw, 34rem)" sound speed={2.7} />
       </motion.div>
       <div className="system-status" aria-label="System status">
         <span>PRODUCT SYSTEM</span>
