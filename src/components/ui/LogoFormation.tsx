@@ -20,15 +20,17 @@ type Mover = 'head' | 'inner' | 'eye' | 'orange' | 'yellow' | 'tri'
 // [start, end, dx, dy, rotation] — seconds / px / radians
 const T: Record<Mover, [number, number, number, number, number]> = {
   head: [0.0, 2.0, -110, -80, -0.03],
-  inner: [2.0, 3.5, 0, 140, 0],
-  eye: [3.7, 4.6, -60, 0, 0],
-  orange: [4.6, 6.1, -340, 320, -0.3],
-  yellow: [4.9, 6.4, 340, 320, 0.3],
-  tri: [6.4, 7.1, 0, 220, 0],
+  // The structural pieces now arrive together as one formation beat.
+  inner: [0.0, 2.0, 0, 140, 0],
+  tri: [0.0, 2.0, 0, 220, 0],
+  // Facial details and coloured braces follow after the structure locks.
+  eye: [2.35, 3.25, -60, 0, 0],
+  orange: [3.25, 4.75, -340, 320, -0.3],
+  yellow: [3.25, 4.75, 340, 320, 0.3],
 }
-const WORD: [number, number] = [7.1, 8.6]
-const WIPE: [number, number] = [3.5, 4.3]
-const HIGHLIGHT: [number, number] = [9.2, 10.4]
+const WORD: [number, number] = [4.75, 6.25]
+const WIPE: [number, number] = [2.35, 3.25]
+const HIGHLIGHT: [number, number] = [8.8, 10.0]
 export const FORMATION_SECONDS = 10.8
 
 const clamp = (x: number, a = 0, b = 1) => Math.min(b, Math.max(a, x))
@@ -96,6 +98,35 @@ export default function LogoFormation({
       o.globalCompositeOperation = 'source-over'
     }
 
+    const fireAtmosphere = (t: number) => {
+      const fade = clamp(1 - Math.max(0, t - 7.8) / 2.6)
+      if (fade <= 0) return
+      o.save()
+      o.globalCompositeOperation = 'lighter'
+      const heat = o.createRadialGradient(570, 650, 20, 570, 650, 390)
+      heat.addColorStop(0, `rgba(255,104,18,${0.16 * fade})`)
+      heat.addColorStop(0.42, `rgba(239,103,19,${0.07 * fade})`)
+      heat.addColorStop(1, 'rgba(239,103,19,0)')
+      o.fillStyle = heat
+      o.fillRect(170, 300, 800, 620)
+
+      for (let i = 0; i < 72; i += 1) {
+        const seed = i * 17.371
+        const rise = (t * (18 + (i % 5) * 5) + seed * 7) % 430
+        const x = 310 + ((Math.sin(seed) + 1) * 0.5) * 520 + Math.sin(t * 1.7 + seed) * 12
+        const y = 850 - rise
+        const alpha = fade * (0.16 + ((i * 13) % 9) / 30) * (1 - rise / 500)
+        o.globalAlpha = alpha
+        o.fillStyle = i % 3 === 0 ? '#FCF0E1' : i % 2 === 0 ? '#F9A32C' : '#EF6713'
+        o.shadowColor = '#EF6713'
+        o.shadowBlur = 12
+        o.beginPath()
+        o.arc(x, y, 1 + (i % 3) * 0.7, 0, Math.PI * 2)
+        o.fill()
+      }
+      o.restore()
+    }
+
     const piece = (r: Mover, t: number) => {
       const im = imgs[r]
       const [s, e, dx, dy, rot] = T[r]
@@ -103,10 +134,10 @@ export default function LogoFormation({
       const b = BOX[r]
       const p = clamp((t - s) / (e - s))
       const k = ease(p)
-      const glow = 28 * (1 - k) + (t > e ? 20 * Math.exp(-(t - e) * 9) : 0)
+      const glow = 54 * (1 - k) + (t > e ? 34 * Math.exp(-(t - e) * 9) : 0)
       o.save()
       o.globalAlpha = clamp(p * 3)
-      o.shadowColor = 'rgba(255,170,60,.9)'
+      o.shadowColor = 'rgba(255,104,18,.95)'
       o.shadowBlur = t > e + 0.6 ? 0 : glow
       o.translate(b.x + b.w / 2 + dx * (1 - k), b.y + b.h / 2 + dy * (1 - k))
       o.rotate(rot * (1 - clamp(k / 0.8)))
@@ -117,7 +148,25 @@ export default function LogoFormation({
     const render = (t: number) => {
       o.clearRect(0, 0, S, S)
       ctx.clearRect(0, 0, S, S)
+      fireAtmosphere(t)
       piece('head', t)
+      // The supplied head artwork contains the facial details baked into it.
+      // Hold that small region back so the eyebrow/eye can resolve after the
+      // main silhouette, matching the staged assembly timing.
+      if (imgs.head && t < WIPE[1]) {
+        const reveal = t < WIPE[0] ? 0 : ease((t - WIPE[0]) / (WIPE[1] - WIPE[0]))
+        o.save()
+        o.fillStyle = '#FCF0E1'
+        o.fillRect(700, 238, 132, 112)
+        if (reveal > 0) {
+          o.globalAlpha = reveal
+          o.beginPath()
+          o.rect(700, 238, 132, 112)
+          o.clip()
+          o.drawImage(imgs.head, BOX.head.x, BOX.head.y)
+        }
+        o.restore()
+      }
       const patch = imgs.patch
       if (patch && t < WIPE[1]) {
         const b = BOX.patch
