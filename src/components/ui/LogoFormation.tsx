@@ -19,19 +19,16 @@ type Mover = 'head' | 'inner' | 'eye' | 'orange' | 'yellow' | 'tri'
 
 // [start, end, dx, dy, rotation] — seconds / px / radians
 const T: Record<Mover, [number, number, number, number, number]> = {
-  head: [0.0, 2.0, -110, -80, -0.03],
-  // The structural pieces now arrive together as one formation beat.
-  inner: [0.0, 2.0, 0, 140, 0],
-  tri: [0.0, 2.0, 0, 220, 0],
-  // Facial details and coloured braces follow after the structure locks.
-  eye: [2.35, 3.25, -60, 0, 0],
-  orange: [3.25, 4.75, -340, 320, -0.3],
-  yellow: [3.25, 4.75, 340, 320, 0.3],
+  head: [0.6, 1.6, -240, -180, -0.16],
+  inner: [1.3, 2.3, 300, 40, 0.2],
+  eye: [2.35, 2.85, 0, 0, 0],
+  orange: [3.0, 4.0, -340, 320, -0.45],
+  yellow: [3.5, 4.5, 340, -240, 0.42],
+  tri: [4.3, 4.9, 0, 220, -0.15],
 }
-const WORD: [number, number] = [4.75, 6.25]
-const WIPE: [number, number] = [2.35, 3.25]
-const HIGHLIGHT: [number, number] = [8.8, 10.0]
-export const FORMATION_SECONDS = 10.8
+const WORD: [number, number] = [5.4, 6.3]
+const HIGHLIGHT: [number, number] = [4.9, 5.7]
+export const FORMATION_SECONDS = 7
 
 const clamp = (x: number, a = 0, b = 1) => Math.min(b, Math.max(a, x))
 const ease = (p: number) => 1 - Math.pow(1 - clamp(p), 3)
@@ -41,6 +38,8 @@ export interface LogoFormationProps {
   size?: number | string
   /** Play the synthesised sound effects (audio must have been unlocked by a user gesture, see unlockAudio). */
   sound?: boolean
+  /** Show the final artwork immediately, without running a timeline. */
+  settled?: boolean
   showWordmark?: boolean
   loop?: boolean
   loopDelay?: number
@@ -57,6 +56,7 @@ export interface LogoFormationProps {
 export default function LogoFormation({
   size = 480,
   sound = false,
+  settled = false,
   showWordmark = true,
   loop = false,
   loopDelay = 4000,
@@ -85,6 +85,12 @@ export default function LogoFormation({
     let raf = 0
     let timer = 0
     let dead = false
+    let finish = () => {}
+    let visible = true
+    let loaded = false
+    let quality = navigator.hardwareConcurrency <= 4 || window.innerWidth < 640 ? 0 : navigator.hardwareConcurrency >= 10 ? 2 : 1
+    let slowFrames = 0
+    canvas.dataset.quality = ['performance', 'balanced', 'ultra'][quality]
     let stopSound: (() => void) | null = null
 
     const band = (x: number, w: number, a: number) => {
@@ -99,7 +105,7 @@ export default function LogoFormation({
     }
 
     const fireAtmosphere = (t: number) => {
-      const fade = clamp(1 - Math.max(0, t - 7.8) / 2.6)
+      const fade = clamp(1 - Math.max(0, t - 4.9) / 1.4)
       if (fade <= 0) return
       o.save()
       o.globalCompositeOperation = 'lighter'
@@ -110,7 +116,7 @@ export default function LogoFormation({
       o.fillStyle = heat
       o.fillRect(170, 300, 800, 620)
 
-      for (let i = 0; i < 72; i += 1) {
+      for (let i = 0; i < [16, 36, 64][quality]; i += 1) {
         const seed = i * 17.371
         const rise = (t * (18 + (i % 5) * 5) + seed * 7) % 430
         const x = 310 + ((Math.sin(seed) + 1) * 0.5) * 520 + Math.sin(t * 1.7 + seed) * 12
@@ -119,7 +125,7 @@ export default function LogoFormation({
         o.globalAlpha = alpha
         o.fillStyle = i % 3 === 0 ? '#FCF0E1' : i % 2 === 0 ? '#F9A32C' : '#EF6713'
         o.shadowColor = '#EF6713'
-        o.shadowBlur = 12
+        o.shadowBlur = quality === 0 ? 0 : 8
         o.beginPath()
         o.arc(x, y, 1 + (i % 3) * 0.7, 0, Math.PI * 2)
         o.fill()
@@ -141,6 +147,8 @@ export default function LogoFormation({
       o.shadowBlur = t > e + 0.6 ? 0 : glow
       o.translate(b.x + b.w / 2 + dx * (1 - k), b.y + b.h / 2 + dy * (1 - k))
       o.rotate(rot * (1 - clamp(k / 0.8)))
+      const depth = 1 - (r === 'orange' ? 0.35 : 0.16) * (1 - k)
+      o.scale(depth, depth)
       o.drawImage(im, -b.w / 2, -b.h / 2)
       o.restore()
     }
@@ -148,35 +156,35 @@ export default function LogoFormation({
     const render = (t: number) => {
       o.clearRect(0, 0, S, S)
       ctx.clearRect(0, 0, S, S)
-      fireAtmosphere(t)
-      piece('head', t)
-      // The supplied head artwork contains the facial details baked into it.
-      // Hold that small region back so the eyebrow/eye can resolve after the
-      // main silhouette, matching the staged assembly timing.
-      if (imgs.head && t < WIPE[1]) {
-        const reveal = t < WIPE[0] ? 0 : ease((t - WIPE[0]) / (WIPE[1] - WIPE[0]))
+      if (t < FORMATION_SECONDS) fireAtmosphere(t)
+      // Finite ignition and localized locking rings, all on the same clock.
+      for (const beat of [0.05, 1.6, 2.3, 2.85, 4, 4.5, 4.9]) {
+        const age = t - beat
+        if (age < 0 || age > 0.55) continue
         o.save()
-        o.fillStyle = '#FCF0E1'
-        o.fillRect(700, 238, 132, 112)
-        if (reveal > 0) {
-          o.globalAlpha = reveal
-          o.beginPath()
-          o.rect(700, 238, 132, 112)
-          o.clip()
-          o.drawImage(imgs.head, BOX.head.x, BOX.head.y)
-        }
+        o.globalAlpha = (1 - age / 0.55) * 0.65
+        o.strokeStyle = beat === 4.5 ? '#f9b633' : '#ef6713'
+        o.lineWidth = 2 * (1 - age / 0.55)
+        o.beginPath()
+        o.ellipse(627, beat < 1 ? 590 : 700, 18 + age * 620, 8 + age * 150, -0.15, 0, Math.PI * 2)
+        o.stroke()
         o.restore()
       }
-      const patch = imgs.patch
-      if (patch && t < WIPE[1]) {
-        const b = BOX.patch
-        const p = t < WIPE[0] ? 0 : ease((t - WIPE[0]) / (WIPE[1] - WIPE[0]))
+      piece('head', t)
+      // The supplied patch masks the baked-in facial cuts while the head moves.
+      if (imgs.patch && t >= T.head[0] && t < 3.1) {
+        const k = ease((t - T.head[0]) / (T.head[1] - T.head[0]))
+        const b = BOX.head
+        const reveal = ease((t - 2.1) / 1)
         o.save()
-        o.globalAlpha = clamp(t / 0.7)
+        o.translate(b.x + b.w / 2 - 240 * (1 - k), b.y + b.h / 2 - 180 * (1 - k))
+        o.rotate(-0.16 * (1 - clamp(k / 0.8)))
+        o.scale(1 - 0.16 * (1 - k), 1 - 0.16 * (1 - k))
+        o.globalAlpha = clamp((t - 0.6) * 3)
         o.beginPath()
-        o.rect(b.x + b.w * p, b.y, b.w * (1 - p), b.h)
+        o.rect(BOX.patch.x - b.x - b.w / 2 + BOX.patch.w * reveal, BOX.patch.y - b.y - b.h / 2, BOX.patch.w * (1 - reveal), BOX.patch.h)
         o.clip()
-        o.drawImage(patch, b.x, b.y)
+        o.drawImage(imgs.patch, BOX.patch.x - b.x - b.w / 2, BOX.patch.y - b.y - b.h / 2)
         o.restore()
       }
       piece('eye', t)
@@ -198,7 +206,7 @@ export default function LogoFormation({
       }
       if (t > HIGHLIGHT[0] && t < HIGHLIGHT[1])
         band(-200 + (S + 400) * ((t - HIGHLIGHT[0]) / (HIGHLIGHT[1] - HIGHLIGHT[0])), 130, 0.35)
-      const sc = t < 8 ? 1.06 - 0.06 * ease(t / 8) : 1
+      const sc = t < 6.3 ? 1.045 - 0.045 * ease(t / 6.3) : 1
       ctx.save()
       ctx.translate(S / 2, S / 2)
       ctx.scale(sc, sc)
@@ -211,19 +219,43 @@ export default function LogoFormation({
       if (dead) return
       stopSound?.()
       stopSound = sound ? playFormationSound(speed) : null
-      const t0 = performance.now()
+      let elapsed = 0
+      let previous = performance.now()
+      let completed = false
+      finish = () => {
+        if (completed) return
+        completed = true
+        cancelAnimationFrame(raf)
+        stopSound?.()
+        render(FORMATION_SECONDS)
+        doneRef.current?.()
+        if (loop) timer = window.setTimeout(play, loopDelay)
+      }
       const frame = (n: number) => {
-        if (dead) return
-        const t = Math.min(FORMATION_SECONDS, ((n - t0) / 1000) * speed)
+        if (dead || completed) return
+        if (!visible || document.hidden) { finish(); return }
+        const delta = n - previous
+        previous = n
+        elapsed += delta
+        if (delta > 28) slowFrames++; else slowFrames = Math.max(0, slowFrames - 1)
+        if (slowFrames > 35 && quality > 0) {
+          quality--; slowFrames = 0
+          canvas.dataset.quality = ['performance', 'balanced', 'ultra'][quality]
+        }
+        const t = Math.min(FORMATION_SECONDS, elapsed / 1000 * Math.max(0.1, speed))
         render(t)
         if (t < FORMATION_SECONDS) raf = requestAnimationFrame(frame)
-        else {
-          doneRef.current?.()
-          if (loop) timer = window.setTimeout(play, loopDelay)
-        }
+        else finish()
       }
       raf = requestAnimationFrame(frame)
     }
+    const observer = new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting
+      if (!visible && loaded) finish()
+    })
+    observer.observe(canvas)
+    const hide = () => { if (document.hidden && loaded) finish() }
+    document.addEventListener('visibilitychange', hide)
 
     const names = Object.keys(BOX) as LayerName[]
     void Promise.all(
@@ -241,7 +273,8 @@ export default function LogoFormation({
       ),
     ).then(() => {
       if (dead) return
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      loaded = true
+      if (settled || !visible || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
         render(FORMATION_SECONDS + 1)
         doneRef.current?.()
       } else play()
@@ -249,11 +282,13 @@ export default function LogoFormation({
 
     return () => {
       dead = true
+      observer.disconnect()
+      document.removeEventListener('visibilitychange', hide)
       cancelAnimationFrame(raf)
       window.clearTimeout(timer)
       stopSound?.()
     }
-  }, [basePath, loop, loopDelay, speed, showWordmark, sound, replayToken])
+  }, [basePath, loop, loopDelay, speed, showWordmark, sound, replayToken, settled])
 
   return (
     <canvas

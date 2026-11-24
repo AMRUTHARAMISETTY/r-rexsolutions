@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import { ArrowDown, ArrowRight, ChevronRight } from 'lucide-react';
 import { ButtonLink } from '../ui/ButtonLink';
 import { CinematicBackdrop } from '../background/CinematicBackdrop';
-import LogoFormation from '../ui/LogoFormation';
+import { FormationExperience } from '../cinematic/FormationExperience';
 
 export function HeroSection({ reducedMotion }: { reducedMotion: boolean }) {
   return (
@@ -25,13 +25,8 @@ export function HeroSection({ reducedMotion }: { reducedMotion: boolean }) {
             </ButtonLink>
           </div>
         </div>
-        <LogoFormation className="hero-logo-formation" size="min(42vw, 34rem)" sound speed={2.7} />
+        <FormationExperience reducedMotion={reducedMotion} />
       </motion.div>
-      <div className="system-status" aria-label="System status">
-        <span>PRODUCT SYSTEM</span>
-        <strong>DISCOVERY / BUILD</strong>
-        <small>clear_thinking.visible_progress</small>
-      </div>
       <a className="scroll-indicator" href="#manifesto" aria-label="Scroll to manifesto">
         <ArrowDown size={18} />
       </a>

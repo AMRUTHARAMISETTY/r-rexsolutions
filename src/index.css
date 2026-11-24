@@ -31,8 +31,8 @@ body {
   min-width: 320px;
   min-height: 100vh;
   margin: 0;
-  overflow-x: hidden;
-  overscroll-behavior-y: none;
+  overflow-x: clip;
+  overscroll-behavior-y: auto;
   overflow-wrap: break-word;
   background:
     radial-gradient(circle at 50% -15%, rgba(239, 103, 19, 0.2), transparent 34rem),
@@ -2150,3 +2150,32 @@ label small,
     display: none;
   }
 }
+
+/* R-REX motion refinement: normal document flow, lightweight cinematic layers. */
+.manifesto-flow { display: grid; grid-template-columns: 1fr; min-height: 0; gap: 2px; }
+.manifesto-chapter { position: relative; min-height: clamp(320px, 65svh, 680px); display: grid; place-items: center; overflow: clip; isolation: isolate; }
+.manifesto-chapter-image { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.manifesto-chapter-copy { position: relative; z-index: 3; width: min(90%, 72rem); text-align: center; padding: 2rem 0; }
+.manifesto-chapter-copy h2 { font-family: var(--font-display); font-size: clamp(2.2rem, 6vw, 6rem); line-height: 1.04; letter-spacing: -0.045em; margin: .6rem 0 0; }
+.service-rail-progress { height: 100%; transform: scaleY(0); transform-origin: top; }
+.service-card, .leader-card, .value-panel, .audience-card, .insight-card { backdrop-filter: none; }
+.services-cables, .work-lumaweave, .contact-glitter { background: radial-gradient(ellipse at 70% 40%, rgba(239,103,19,.15), transparent 65%); }
+.service-card { position: relative; }
+.service-card::after { content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; background: linear-gradient(125deg, rgba(249,163,44,.12), transparent 40%); opacity: 0; transition: opacity .3s ease; }
+@media (hover: hover) and (pointer: fine) { .service-card:hover::after { opacity: 1; } .work-card:hover .work-media img { transform: scale(1.045); } }
+.work-media img { transition: transform .6s cubic-bezier(.22,1,.36,1); }
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .section-heading { animation: rrex-heading-entry linear both; animation-timeline: view(); animation-range: entry 0% entry 85%; }
+    .manifesto-chapter-image { animation: rrex-chapter-drift linear both; animation-timeline: view(); animation-range: cover 0% cover 100%; }
+  }
+}
+@keyframes rrex-heading-entry { from { opacity: .65; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes rrex-chapter-drift { from { transform: scale(1.025); } to { transform: scale(1.09); } }
+@media (max-width: 899px) { .manifesto-chapter { min-height: 48svh; } .cursor-glow { display: none; } }
+@media (prefers-reduced-motion: reduce) { .service-rail-progress { transform: scaleY(1); } .cursor-glow { display: none; } }
+.cinematic-backdrop { background: radial-gradient(ellipse at 75% 40%, #59270e 0%, #1b0e07 35%, #090604 76%); }
+@media (max-width: 899px) { .service-rail-progress { transform: scaleY(1); } }
+
+.formation-experience { min-width: 0; position: relative; perspective: 1000px; }
+@media (max-width: 980px) { .formation-experience { justify-self: center; width: min(100%, 34rem); } }

@@ -106,27 +106,17 @@ export function playFormationSound(rate = 1): (() => void) | null {
     noise(c, bus, s(x), 0.12, 'lowpass', 500, 80, v * 0.8)
   }
 
-  tone(c, bus, s(0), 100, 100, 1.2, 'sawtooth', 0.02, 0.4) // quiet electrical buzz
-  tone(c, bus, s(0), 40, 50, 1.6, 'sine', 0.2, 0.9) // sub swell
-  noise(c, bus, s(0.1), 1.7, 'bandpass', 200, 900, 0.12) // head travel
-  thunk(1.95, 0.5)
-  noise(c, bus, s(2.1), 1.1, 'bandpass', 500, 2500, 0.09) // inner neck air
-  click(3.45, 1800, 0.15)
-  thunk(3.5, 0.3)
-  tone(c, bus, s(3.5), 120, 700, 1.1, 'sawtooth', 0.03, 0.5) // rising electrical buzz
-  tone(c, bus, s(4.5), 3200, 3200, 0.25, 'sine', 0.05) // eye glint
-  noise(c, bus, s(4.6), 1.3, 'bandpass', 300, 1800, 0.1) // orange travel
-  click(6.05, 1400, 0.18)
-  thunk(6.05, 0.3)
-  noise(c, bus, s(4.9), 1.3, 'bandpass', 300, 1800, 0.1) // yellow travel
-  click(6.35, 1600, 0.18)
-  thunk(6.35, 0.3)
-  noise(c, bus, s(6.4), 0.6, 'bandpass', 600, 3000, 0.08) // triangle rise
-  click(7.05, 2800, 0.2)
-  thunk(7.05, 0.35)
-  noise(c, bus, s(7.1), 1.4, 'bandpass', 800, 5000, 0.06) // wordmark sweep
-  tone(c, bus, s(9.0), 70, 28, 1.8, 'sine', 0.9, 0.01, true) // final impact + reverb
-  noise(c, bus, s(9.0), 0.5, 'lowpass', 2000, 60, 0.5, true)
+  tone(c, bus, s(0), 40, 65, 0.6, 'sine', 0.22, 0.08)
+  tone(c, bus, s(0.1), 100, 600, 0.5, 'sawtooth', 0.025, 0.08)
+  for (const [start, end, pitch] of [[0.6, 1.6, 900], [1.3, 2.3, 1200], [3, 4, 1400], [3.5, 4.5, 1800], [4.3, 4.9, 2400]]) {
+    noise(c, bus, s(start), (end - start) / rate, 'bandpass', 200, pitch, 0.1)
+    click(end, pitch, 0.12)
+    thunk(end, 0.3)
+  }
+  tone(c, bus, s(2.7), 700, 3200, 0.15, 'sine', 0.05)
+  noise(c, bus, s(5.4), 0.9 / rate, 'bandpass', 800, 5000, 0.06)
+  tone(c, bus, s(4.9), 70, 28, 1.0, 'sine', 0.55, 0.01, true)
+  noise(c, bus, s(4.9), 0.35, 'lowpass', 2000, 60, 0.25, true)
 
   return () => {
     const now = c.currentTime
@@ -135,4 +125,9 @@ export function playFormationSound(rate = 1): (() => void) | null {
       g.gain.setTargetAtTime(0, now, 0.05)
     }
   }
+}
+
+/** Mute the live bus without restarting the visual timeline. */
+export function setFormationMuted(muted: boolean) {
+  if (ctx && master) master.gain.setTargetAtTime(muted ? 0 : 0.8, ctx.currentTime, 0.025)
 }
